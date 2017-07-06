@@ -1,0 +1,16 @@
+/*
+ * основная панель
+ */
+.mainPane {
+    -fx-background-color: rgba(32,39,46,0.97);
+}
+
+.logo {
+    -fx-image:url("/icons/appIcon.png");
+}
+
+.appName-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bolder;
+    -fx-text-fill: white;
+}

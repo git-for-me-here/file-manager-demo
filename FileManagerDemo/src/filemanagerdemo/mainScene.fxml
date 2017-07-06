@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<VBox id="mainPane" prefHeight="600.0" prefWidth="900.0" styleClass="mainPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="filemanagerdemo.mainSceneController">
+    <children>
+        <AnchorPane id="controlPane" pickOnBounds="false" prefHeight="37.0" prefWidth="640.0" style="-fx-background-color: transparent;" visible="true">
+            <children>
+                <Label styleClass="appName-label" text="file-manager-demo"  AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="5.0" />
+                <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" styleClass="logo" />
+            </children>
+        </AnchorPane>
+    </children>     
+    
+    <stylesheets>
+        <URL value="@main.css"/>
+    </stylesheets>
+    
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+    </padding>
+</VBox>
