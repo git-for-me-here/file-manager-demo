@@ -1,6 +1,7 @@
 package filemanagerdemo;
 
 import javafx.application.Application;
+import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,7 +18,10 @@ public class FileManagerDemo extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("mainScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScene.fxml"));
+        Parent root = (Parent)loader.load();
+        MainSceneController controller = (MainSceneController)loader.getController();
+        controller.setStage(primaryStage); 
         
         Scene scene = new Scene(root, Color.TRANSPARENT);
         
@@ -25,7 +29,6 @@ public class FileManagerDemo extends Application {
         Image image = new Image("/icons/appIcon.png");
         primaryStage.getIcons().addAll(image);
         
-        primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.show();

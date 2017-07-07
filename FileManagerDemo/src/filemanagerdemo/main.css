@@ -1,16 +1,48 @@
 /*
+ *
  * основная панель
+ *
  */
 .mainPane {
     -fx-background-color: rgba(32,39,46,0.97);
 }
-
+/* логотип */
 .logo {
     -fx-image:url("/icons/appIcon.png");
 }
-
+/* имя приложения */
 .appName-label {
     -fx-font-size: 12px;
     -fx-font-weight: bolder;
     -fx-text-fill: white;
+}
+/*
+ * кнопочки управления окном
+ */
+.button {
+    -fx-background-color: null;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat; 
+    -fx-background-radius: 0;
+}
+/* закрыть */
+.btnClose{   
+    -fx-background-image: url("/icons/close.png");    
+}
+.btnClose:hover {
+    -fx-background-color: #31393f;
+}
+/* изменение размеров окна */
+.btnResize{   
+    -fx-background-image: url("/icons/resize.png");    
+}
+.btnResize:hover {
+    -fx-background-color: #31393f;
+}
+/* изменение состояния окна */
+.btnHide{   
+    -fx-background-image: url("/icons/hide.png");    
+}
+.btnHide:hover {
+    -fx-background-color: #31393f;
 }

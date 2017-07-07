@@ -9,12 +9,15 @@
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 
-<VBox id="mainPane" prefHeight="600.0" prefWidth="900.0" styleClass="mainPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="filemanagerdemo.mainSceneController">
+<VBox fx:id="mainPane" prefHeight="600.0" prefWidth="900.0" styleClass="mainPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="filemanagerdemo.MainSceneController">
     <children>
-        <AnchorPane id="controlPane" pickOnBounds="false" prefHeight="37.0" prefWidth="640.0" style="-fx-background-color: transparent;" visible="true">
+        <AnchorPane fx:id="controlPane" pickOnBounds="false" prefHeight="37.0" style="-fx-background-color: transparent;" visible="true">
             <children>
-                <Label styleClass="appName-label" text="file-manager-demo"  AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="5.0" />
-                <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" styleClass="logo" />
+                <Label styleClass="appName-label" text="file-manager-demo"  AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="8.0" />
+                <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" styleClass="logo" AnchorPane.topAnchor="3.5" />
+                <Button fx:id="btnClose" onAction="#handleButtonClose" prefHeight="32.0" prefWidth="32.0" styleClass="btnClose" AnchorPane.rightAnchor="5.0" />
+                <Button fx:id="btnResize"  prefHeight="32.0" prefWidth="32.0" styleClass="btnResize" AnchorPane.rightAnchor="37.0" />
+                <Button fx:id="btnHide"  onAction="#handleButtonHide" prefHeight="32.0" prefWidth="32.0" styleClass="btnHide" AnchorPane.rightAnchor="70.0" />
             </children>
         </AnchorPane>
     </children>     
