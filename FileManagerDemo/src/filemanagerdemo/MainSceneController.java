@@ -51,6 +51,7 @@ public class MainSceneController implements Initializable {
             stage.setY(mouseEvent.getScreenY() + dragDelta.y);
         });
         
+        // Эффект для кнопок управления окном 
         btnClose.setEffect(new Bloom());
         btnResize.setEffect(new Bloom());
         btnHide.setEffect(new Bloom());
