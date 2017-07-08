@@ -1,11 +1,14 @@
 package filemanagerdemo;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.effect.Bloom;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -26,10 +29,17 @@ public class MainSceneController implements Initializable {
     private Button btnResize;
     @FXML
     private Button btnHide;
+    @FXML
+    private TreeView fileSystemTree;
     
     @FXML
     private void handleButtonClose(ActionEvent event) {
         stage.close();
+    }
+    
+    @FXML
+    private void handleButtonResize(ActionEvent event) {
+        stage.setFullScreen(!stage.isFullScreen());
     }
     
     @FXML
@@ -55,6 +65,19 @@ public class MainSceneController implements Initializable {
         btnClose.setEffect(new Bloom());
         btnResize.setEffect(new Bloom());
         btnHide.setEffect(new Bloom());
+        
+        //Построение дерева файловой системы
+        FileSystemTree fsTree = new FileSystemTree();
+        TreeItem<File> root = new TreeItem<>(new File(""));
+        root.setExpanded(true);
+        
+        for (File cat : File.listRoots()) {
+            TreeItem<File> item = fsTree.createNode(cat);
+            root.getChildren().add(item);
+        }
+
+        fileSystemTree.setRoot(root);
+        fileSystemTree.setShowRoot(false);
     }
 
     void setStage(Stage primaryStage) {
