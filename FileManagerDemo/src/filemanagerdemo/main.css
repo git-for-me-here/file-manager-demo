@@ -9,6 +9,10 @@
 .scroll-bar:horizontal, .scroll-bar:vertical{
     -fx-background-color: transparent;
 }
+.table-view:focused, .tree-view:focused {
+    -fx-background-insets: 0, 1;
+    -fx-padding: 1;
+}
 /* логотип */
 .logo {
     -fx-image:url("/icons/appIcon.png");
@@ -54,10 +58,44 @@
  */
 /* дерево файловой системы */
 .tree-view, .tree-cell {
-    -fx-background-color: rgba(126,135,142,0.7);
-    -fx-text-fill: #f5f5f5;
+    -fx-background-color: rgb(126,135,142);
+    -fx-text-fill: #191e24; 
 }
 .tree-cell > .tree-disclosure-node > .arrow  {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: #191e24;
 }
-
+/* таблица файловой системы */
+.table-view, .table-view .filler {
+    -fx-background-color: rgb(126,135,142);
+}
+.column-header {
+    -fx-background-color: rgb(126,135,142);
+    -fx-background-insets: -1; 
+}
+.table-view .column-header .label {
+    -fx-background-color: rgb(126,135,142);
+    -fx-text-fill: #435061;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-weight: normal;
+}
+.table-view .table-cell{
+    -fx-text-fill: #f5f5f5;
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: 0 0 0 5;
+}
+.table-row-cell {
+    -fx-background-color: rgba(81,90,97,0.7);
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */
+    -fx-cell-size: 35px;
+}
+.table-row-cell:odd {
+    -fx-background-color: rgba(126,135,142,0.7);
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */  
+}
+.table-row-cell:selected {
+    -fx-background-color: #2f353b;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}

@@ -7,6 +7,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.effect.Bloom;
@@ -31,6 +33,16 @@ public class MainSceneController implements Initializable {
     private Button btnHide;
     @FXML
     private TreeView fileSystemTree;
+    @FXML
+    private TableView fileSystemTable;
+    @FXML
+    private TableColumn nameCol;
+    @FXML
+    private TableColumn modifiedCol;
+    @FXML
+    private TableColumn typeCol;
+    @FXML
+    private TableColumn sizeCol;
     
     @FXML
     private void handleButtonClose(ActionEvent event) {
@@ -66,7 +78,7 @@ public class MainSceneController implements Initializable {
         btnResize.setEffect(new Bloom());
         btnHide.setEffect(new Bloom());
         
-        //Построение дерева файловой системы
+        // Построение дерева файловой системы
         FileSystemTree fsTree = new FileSystemTree();
         TreeItem<File> root = new TreeItem<>(new File(""));
         root.setExpanded(true);
@@ -78,6 +90,12 @@ public class MainSceneController implements Initializable {
 
         fileSystemTree.setRoot(root);
         fileSystemTree.setShowRoot(false);
+        
+        // Таблица файловой системы
+        nameCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.35));
+        modifiedCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.15));
+        typeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.15));
+        sizeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.35));
     }
 
     void setStage(Stage primaryStage) {

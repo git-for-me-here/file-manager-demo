@@ -9,7 +9,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 
-<VBox fx:id="mainPane" prefHeight="600.0" prefWidth="900.0" styleClass="mainPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="filemanagerdemo.MainSceneController">
+<VBox fx:id="mainPane" prefHeight="650.0" prefWidth="1000.0" styleClass="mainPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="filemanagerdemo.MainSceneController">
     <children>
         <AnchorPane fx:id="controlPane" pickOnBounds="false" prefHeight="37.0" style="-fx-background-color: transparent;" visible="true">
             <children>
@@ -20,9 +20,17 @@
                 <Button fx:id="btnHide"  onAction="#handleButtonHide" prefHeight="32.0" prefWidth="32.0" styleClass="btnHide" AnchorPane.rightAnchor="70.0" />
             </children>
         </AnchorPane>
-        <HBox fx:id="contentPane" style="-fx-background-color: rgba(81,90,97,0.7); -fx-background-radius: 5;" VBox.vgrow="ALWAYS">
+        <HBox fx:id="contentPane" spacing="3.0" style="-fx-background-color: rgba(81,90,97,0.7); -fx-background-radius: 5;" VBox.vgrow="ALWAYS">
             <children>
-                <TreeView fx:id="fileSystemTree" prefWidth="300.0" />
+                <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" />
+                <TableView fx:id="fileSystemTable" HBox.hgrow="ALWAYS" >
+                    <columns>
+                        <TableColumn fx:id="nameCol" text="Имя" />
+                        <TableColumn fx:id="modifiedCol" text="Дата изменения" />
+                        <TableColumn fx:id="typeCol" text="Тип" />
+                        <TableColumn fx:id="sizeCol" text="Размер" />
+                    </columns>
+                </TableView>  
             </children>
             <padding>
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
