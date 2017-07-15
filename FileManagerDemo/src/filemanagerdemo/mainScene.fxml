@@ -22,7 +22,7 @@
         </AnchorPane>
         <HBox fx:id="contentPane" spacing="3.0" style="-fx-background-color: rgba(81,90,97,0.7); -fx-background-radius: 5;" VBox.vgrow="ALWAYS">
             <children>
-                <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" />
+                <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" onMouseClicked="#handleTreeClicked" />
                 <TableView fx:id="fileSystemTable" HBox.hgrow="ALWAYS" >
                     <columns>
                         <TableColumn fx:id="nameCol" text="Имя" />

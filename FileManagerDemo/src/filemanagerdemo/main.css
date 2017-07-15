@@ -64,6 +64,21 @@
 .tree-cell > .tree-disclosure-node > .arrow  {
     -fx-background-color: #191e24;
 }
+.tree-cell > .tree-disclosure-node {
+    -fx-cursor: default;
+}
+.tree-cell:selected {
+    -fx-background-color: rgba(81,90,97,0.4), rgba(81,90,97,0.7), rgba(81,90,97,0.7);
+    -fx-background-insets: 0, 21 0 0 0, 0 0 21 0; 
+}
+.cellHover {
+    -fx-background-color: rgba(81,90,97,0.4), rgba(81,90,97,0.4);
+    -fx-background-insets: 22 0 0 0, 0 0 22 0;  
+}
+.cellClicked  {
+/*    -fx-background-color: rgba(81,90,97,0.4), rgba(81,90,97,0.7), rgba(81,90,97,0.7);
+    -fx-background-insets: 0, 21 0 0 0, 0 0 21 0; */
+}
 /* таблица файловой системы */
 .table-view, .table-view .filler {
     -fx-background-color: rgb(126,135,142);

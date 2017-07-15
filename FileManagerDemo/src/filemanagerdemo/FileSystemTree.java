@@ -1,41 +1,20 @@
 package filemanagerdemo;
 
 import java.io.File;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.control.TreeItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 /**
  *
  * @author fakelake
  */
-public class FileSystemTree {  
+public class FileSystemTree {
     protected TreeItem<File> createNode(final File f) {
         return new TreeItem<File>(f) {   
             private boolean isLeaf;
             private boolean isFirstTimeChildren = true;
             private boolean isFirstTimeLeaf = true;
-            
-            @Override
-            public <E extends Event> void addEventHandler(EventType<E> eventType,
-                    EventHandler<E> eventHandler) {
-                super.setGraphic(super.getValue().isFile()
-                        ? new ImageView(new Image("icons/file-icon.png"))
-                        : new ImageView(new Image("icons/close-folder.png")));
-                super.expandedProperty().addListener(
-                        (ObservableValue<? extends Boolean> ov,
-                                Boolean t, Boolean t1) -> {
-                    super.setGraphic(t1 
-                            ? new ImageView(new Image("icons/open-folder.png"))
-                            : new ImageView(new Image("icons/close-folder.png")));
-                });          
-            }
             
             @Override
             public ObservableList<TreeItem<File>> getChildren() {
