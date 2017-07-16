@@ -5,6 +5,7 @@
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
@@ -25,10 +26,26 @@
                 <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" onMouseClicked="#handleTreeClicked" />
                 <TableView fx:id="fileSystemTable" HBox.hgrow="ALWAYS" >
                     <columns>
-                        <TableColumn fx:id="nameCol" text="Имя" />
-                        <TableColumn fx:id="modifiedCol" text="Дата изменения" />
-                        <TableColumn fx:id="typeCol" text="Тип" />
-                        <TableColumn fx:id="sizeCol" text="Размер" />
+                        <TableColumn fx:id="nameCol" text="Имя" style="-fx-text-fill: #191e24;">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="name" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="modifiedCol" text="Дата изменения" style="-fx-text-fill: #444b52;">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="modified" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="typeCol" text="Тип" style="-fx-text-fill: #444b52;">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="type" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="sizeCol" text="Размер" style="-fx-text-fill: #444b52; -fx-alignment: CENTER-RIGHT; -fx-padding: 0 18 0 0;">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="size" />
+                            </cellValueFactory>
+                        </TableColumn>
                     </columns>
                 </TableView>  
             </children>
