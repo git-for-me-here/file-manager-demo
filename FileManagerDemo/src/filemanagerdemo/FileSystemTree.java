@@ -1,8 +1,7 @@
 package filemanagerdemo;
 
 import java.io.File;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
@@ -11,6 +10,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 /**
@@ -18,10 +18,27 @@ import javafx.util.Callback;
  * @author fakelake
  */
 public class FileSystemTree {
-    ObjectProperty selectedItem = new SimpleObjectProperty();
-    ObjectProperty previousSelectedItem = new SimpleObjectProperty();
+    private TreeView treeView;
+    private TreeItem selectedItem;
+    private ArrayList<TreeDataBinding> treeNodes = new ArrayList();
     
-    Callback<TreeView<File>, TreeCell<File>> getCellFactory = new Callback<TreeView<File>, TreeCell<File>>() {
+    public FileSystemTree(TreeView treeView) {
+        TreeItem<File> root = new TreeItem<>(new File(""));
+        root.setExpanded(true);
+        
+        for (File cat : File.listRoots()) {
+            TreeItem<File> item = this.createNode(cat);
+            root.getChildren().add(item);
+        }
+
+        treeView.setRoot(root);
+        treeView.setShowRoot(false);
+        treeView.setCellFactory(this.getCellFactory);
+        
+        this.treeView = treeView;
+    }
+    
+    private Callback<TreeView<File>, TreeCell<File>> getCellFactory = new Callback<TreeView<File>, TreeCell<File>>() {
         @Override
         public TreeCell<File> call(TreeView<File> treeView) {
             TreeCell<File> cell = new TreeCell<>();
@@ -44,44 +61,50 @@ public class FileSystemTree {
                     // эффект при наведении мыши
                     cell.setOnMouseEntered(e -> {
                         if (cell.getTreeItem() != null) {
-                            if (!cell.getStyleClass().contains("cellClicked")) {
-                                cell.getStyleClass().add("cellHover");
-                            }
+                            cell.getStyleClass().add("cellHover");
                             cell.setCursor(Cursor.HAND);
                         }
                     });
+                    cell.setId(cell.getText());
+                    
+                    if (!containsObjectWithId(cell.getId())) {
+                        treeNodes.add(new TreeDataBinding(
+                            treeView,
+                            cell.getTreeItem(),
+                            cell,
+                            cell.getId()
+                        ));                  
+                    }
                 }
             });
-
+            
             cell.setOnMouseExited(e -> {
                 if (cell.getTreeItem() != null) {
-                    cell.getStyleClass().remove("cellHover");
+                    cell.getStyleClass().remove("cellHover"); 
                 }
             });
 
-            // эффект нажатия мыши
             cell.setOnMouseClicked(e -> {
+                // работаем только со значимой ячейкой
                 if (cell.getTreeItem() != null) {
-                    selectedItem.set(cell.getTreeItem());
-
-                    if (cell.getTreeItem().isExpanded()) {
-                        selectedItem.set(previousSelectedItem.get());
-                        treeView.getSelectionModel().select((TreeItem)selectedItem.get());
+                    // клик по ячейки
+                    if (e.getTarget() instanceof TreeCell || 
+                            e.getTarget() instanceof Text) {
+                        // запоминаем выбранный item
+                        selectedItem = cell.getTreeItem();
                     } else {
-                       selectedItem.set(cell.getTreeItem());
+                        if (cell.getTreeItem().isExpanded()) {
+                            treeView.getSelectionModel().select(selectedItem);
+                        }
                     }
-
-                    previousSelectedItem.set(selectedItem.get());
-
-                    cell.getStyleClass().remove("cellHover");
                 }
-            });
+            });           
             
             return cell;
         }
     };
-    
-    protected TreeItem<File> createNode(final File f) {
+
+    private TreeItem<File> createNode(final File f) {
         return new TreeItem<File>(f) {   
             private boolean isLeaf;
             private boolean isFirstTimeChildren = true;
@@ -127,5 +150,93 @@ public class FileSystemTree {
                 return FXCollections.emptyObservableList();
             }
         };
+    }
+    
+    private boolean containsObjectWithId(String id) {
+        for (TreeDataBinding obj : treeNodes) {
+            if (obj.getId().equals(id)) return true;
+        }
+        
+        return false;
+    }
+    
+    protected TreeItem<File> getTreeItemById(String id) {
+        return treeNodes.get(treeNodes.indexOf(getTreeDataBindingObjectById(id))).getTreeItem();
+    }
+    
+    private TreeDataBinding getTreeDataBindingObjectById(String id) {
+        for (TreeDataBinding obj : treeNodes) {
+            if (obj.getId().equals(id)) return obj;
+        }
+        
+        return null;
+    }
+    
+    protected TreeItem getParentOfSelectedItem(TreeItem selectedItem) {
+        TreeItem parent = selectedItem;
+
+        for (int i=1; i<this.treeView.getTreeItemLevel(selectedItem); i++) {
+            parent = parent.getParent();    
+        }
+
+        return parent;
+    }
+    
+    public class TreeDataBinding  {
+        private TreeView treeView;
+        private TreeItem treeItem;
+        private TreeCell treeCell;
+        private String id;
+        private boolean expandedStatus;
+        
+        public TreeDataBinding() {}
+        
+        public TreeDataBinding(TreeView treeView, TreeItem treeItem, TreeCell treeCell, String id) {
+            this.treeView = treeView;
+            this.treeItem = treeItem;
+            this.treeCell = treeCell;
+            this.id = id;
+            this.expandedStatus = false;
+        }
+        
+        public TreeView getTreeView() {
+            return this.treeView;
+        }
+        
+        public void setTreeView(TreeView treeView) {
+            this.treeView = treeView;
+        }
+        
+        public TreeItem getTreeItem() {
+            return this.treeItem;
+        }
+        
+        public void setTreeItem(TreeItem treeItem) {
+            this.treeItem = treeItem;
+        }
+        
+        public TreeCell getTreeCell() {
+            return this.treeCell;
+        }
+        
+        public void setTreeCell(TreeCell treeCell) {
+            this.treeCell = treeCell;
+        }
+        
+        public String getId() {
+            return this.id;
+        }
+        
+        public void setSize(String id) {
+            this.id = id;
+        }
+        
+        public boolean getExpandedStatus() {
+            return this.expandedStatus;
+        }
+        
+        public void setExpandedStatus(boolean expandedStatus) {
+            this.expandedStatus = expandedStatus;
+        }
     }
 }

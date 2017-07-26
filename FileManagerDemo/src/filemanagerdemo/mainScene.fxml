@@ -12,7 +12,7 @@
 
 <VBox fx:id="mainPane" prefHeight="650.0" prefWidth="1000.0" styleClass="mainPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="filemanagerdemo.MainSceneController">
     <children>
-        <AnchorPane fx:id="controlPane" pickOnBounds="false" prefHeight="37.0" style="-fx-background-color: transparent;" visible="true">
+        <AnchorPane fx:id="controlPane" pickOnBounds="false" prefHeight="37.0" style="-fx-background-color: transparent;">
             <children>
                 <Label styleClass="appName-label" text="file-manager-demo"  AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="8.0" />
                 <ImageView fitHeight="32.0" fitWidth="32.0" styleClass="logo" AnchorPane.topAnchor="3.5" />
@@ -21,9 +21,29 @@
                 <Button fx:id="btnHide"  onAction="#handleButtonHide" prefHeight="32.0" prefWidth="32.0" styleClass="btnHide" AnchorPane.rightAnchor="70.0" />
             </children>
         </AnchorPane>
+        <HBox style="-fx-padding: 0 0 10 5;" spacing="5.0" >
+            <children>
+                <Button fx:id="btnBack" onAction="#handleButtonBack" prefHeight="20.0" prefWidth="32.0" styleClass="btnBack" disable="true" />
+                <Button fx:id="btnNext" prefHeight="20.0" prefWidth="32.0" styleClass="btnNext" disable="true" />
+                <VBox style="-fx-background-color: rgba(81,90,97,0.7); -fx-background-radius: 5; -fx-padding: 3;" HBox.hgrow="ALWAYS">
+                    <children>
+                        <HBox styleClass="pathPane" spacing="3.0" >
+                            <children>
+                                <ImageView fx:id="greyFolderImageView">
+                                    <image>
+                                        <Image url="icons/grey-folder-icon.png" />
+                                    </image>
+                                </ImageView>
+                                <TextField fx:id="pathTextField" styleClass="pathTextField" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
         <HBox fx:id="contentPane" spacing="3.0" style="-fx-background-color: rgba(81,90,97,0.7); -fx-background-radius: 5;" VBox.vgrow="ALWAYS">
             <children>
-                <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" onMouseClicked="#handleTreeClicked" />
+                <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" onMousePressed="#handleTreePressed" />
                 <TableView fx:id="fileSystemTable" HBox.hgrow="ALWAYS" >
                     <columns>
                         <TableColumn fx:id="nameCol" text="Имя" style="-fx-text-fill: #191e24;">

@@ -8,15 +8,18 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.effect.Bloom;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -26,6 +29,8 @@ import javafx.stage.Stage;
  */
 public class MainSceneController implements Initializable {
     private Stage stage;
+    private FileSystemTree fsTree;
+    private TreeItem selectedItem;
     
     @FXML
     private Pane controlPane;
@@ -35,6 +40,10 @@ public class MainSceneController implements Initializable {
     private Button btnResize;
     @FXML
     private Button btnHide;
+    @FXML
+    private Button btnBack;
+    @FXML
+    private Button btnNext;
     @FXML
     private TreeView fileSystemTree;
     @FXML
@@ -47,6 +56,8 @@ public class MainSceneController implements Initializable {
     private TableColumn typeCol;
     @FXML
     private TableColumn sizeCol;
+    @FXML
+    private TextField pathTextField;
     
     @FXML
     private void handleButtonClose(ActionEvent event) {
@@ -64,25 +75,42 @@ public class MainSceneController implements Initializable {
     }
     
     @FXML
-    private void handleTreeClicked(MouseEvent mouseEvent) {
-        if ((mouseEvent.getTarget() instanceof TreeCell ||
-                mouseEvent.getTarget() instanceof Text) &&
-                !fileSystemTree.getSelectionModel().isEmpty()) {
-            int selectedItemIndex = fileSystemTree.getSelectionModel().getSelectedIndex();
-            File selectedItemValue = (File)fileSystemTree.getTreeItem(selectedItemIndex).getValue();
-            String path = selectedItemValue.getPath();
-            File file = new File(path);
-            ArrayList<File> filesList = new ArrayList<>();
-            if (file.isFile()) {
-                filesList.add(file);
-            } else {
-                File[] filesArr = file.listFiles();
-                if (filesArr != null) {
-                    filesList = new ArrayList<>(Arrays.asList(filesArr));
+    private void handleButtonBack(ActionEvent event) {
+    }
+    
+    @FXML
+    private void handleTreePressed(MouseEvent e) {
+        // работаем только, если было выделение
+        if (!fileSystemTree.getSelectionModel().isEmpty()) {
+            //работаем только со значимым item
+            if (!e.getTarget().toString().contains("'null'")) {
+                // клик по области выделения
+                if (e.getTarget() instanceof TreeCell || 
+                        e.getTarget() instanceof Text) {
+                    // запоминаем выбранный элемент, если он не null
+                    if (fileSystemTree.getSelectionModel().getSelectedItem() != null) {
+                        selectedItem = (TreeItem) fileSystemTree.getSelectionModel().getSelectedItem();
+                    }
+                }
+                // клик по arrow
+                if (e.getTarget() instanceof Group || 
+                        e.getTarget() instanceof StackPane) {
+                    //System.out.println(e.getTarget());
+                    String receivedId = e.getPickResult().getIntersectedNode().getParent().getId() == null 
+                            ? e.getPickResult().getIntersectedNode().getParent().getParent().getId()
+                            : e.getPickResult().getIntersectedNode().getParent().getId();
+                    // если это НЕ предок или НЕ сам выделенный элемент;
+                    if (!selectedItem.getValue().toString().contains(receivedId)) {
+                        // выделяем нужный элемент
+                        if (fsTree.getParentOfSelectedItem(selectedItem).isExpanded()) {
+                            fileSystemTree.getSelectionModel().select(selectedItem);
+                        } else {
+                            fileSystemTree.getSelectionModel().select(fsTree.getParentOfSelectedItem(selectedItem));
+                        }
+                    }
+                    // иначе работаем с ЯЧЕЙКОЙ в FileSystemTree
                 }
             }
-            FileSystemTable fsTable = new FileSystemTable();
-            fileSystemTable.setItems(fsTable.getFileMetaData(filesList));
         }
     }
     
@@ -105,29 +133,45 @@ public class MainSceneController implements Initializable {
         btnResize.setEffect(new Bloom());
         btnHide.setEffect(new Bloom());
         
-        // Построение дерева файловой системы
-        FileSystemTree fsTree = new FileSystemTree();
-        TreeItem<File> root = new TreeItem<>(new File(""));
-        root.setExpanded(true);
+        // Эффект для кнопок перемещения по просмотренным директориям
+        btnBack.hoverProperty().addListener((observable, oldValue, isHover) -> {
+            btnBack.setEffect(isHover ? new  Bloom() : null );
+        });
+        btnNext.hoverProperty().addListener((observable, oldValue, isHover) -> {
+            btnNext.setEffect(isHover ? new  Bloom() : null );
+        });
         
-        for (File cat : File.listRoots()) {
-            TreeItem<File> item = fsTree.createNode(cat);
-            root.getChildren().add(item);
-        }
-
-        fileSystemTree.setRoot(root);
-        fileSystemTree.setShowRoot(false);
-        fileSystemTree.setCellFactory(fsTree.getCellFactory);
+        // Построение дерева файловой системы
+        fsTree = new FileSystemTree(fileSystemTree);
         
         // Таблица файловой системы
         nameCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.35));
         modifiedCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.15));
         typeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.15));
-        sizeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.35));
+        sizeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.35)); 
     }
-
+    
     void setStage(Stage primaryStage) {
         this.stage = primaryStage;
+    }
+    
+    /*
+     * Устанавливает данные для отображения в таблице файловой системы
+     */
+    private void setItemsToFileSystemTable(String path) {
+        File file = new File(path);
+        ArrayList<File> filesList = new ArrayList<>();
+        if (file.isFile()) {
+            filesList.add(file);
+        } else {
+            File[] filesArr = file.listFiles();
+            if (filesArr != null) {
+                filesList = new ArrayList<>(Arrays.asList(filesArr));
+            }
+        }
+
+        FileSystemTable fsTable = new FileSystemTable();
+        fileSystemTable.setItems(fsTable.getFileMetaData(filesList));
     }
 
     private static class Coordinates {

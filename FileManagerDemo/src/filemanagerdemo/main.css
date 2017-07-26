@@ -54,9 +54,43 @@
     -fx-background-color: #31393f;
 }
 /*
+ *
  * контент
+ *
  */
-/* дерево файловой системы */
+/*
+ * кнопочки перемещения по директориям
+ */
+.btnBack, .btnNext {
+    -fx-padding: 15 0 0 0;
+} 
+.btnBack:disabled, .btnNext:disabled {
+    -fx-opacity: 0.3;
+}
+/* назад */
+.btnBack {
+    -fx-background-image: url("/icons/back-icon.png");  
+}
+/* вперед */
+.btnNext {
+    -fx-background-image: url("/icons/next-icon.png");  
+}
+/*
+ * отоброжение пути текущей директории
+ */
+.pathPane {
+    -fx-background-color: rgb(126,135,142);
+    -fx-padding: 3 0 0 3;
+}
+.pathTextField {
+    -fx-background-color: transparent;
+    -fx-text-fill: #191e24; 
+    -fx-font-size: 13;
+    -fx-padding: 0 0 3 0;
+}
+/*
+ * дерево файловой системы
+ */
 .tree-view, .tree-cell {
     -fx-background-color: rgb(126,135,142);
     -fx-text-fill: #191e24; 
@@ -75,7 +109,9 @@
     -fx-background-color: rgba(81,90,97,0.4), rgba(81,90,97,0.4);
     -fx-background-insets: 22 0 0 0, 0 0 22 0;  
 }
-/* таблица файловой системы */
+/*
+ * таблица файловой системы
+ */
 .table-view, .table-view .filler {
     -fx-background-color: rgb(126,135,142);
 }
@@ -96,7 +132,7 @@
 .table-row-cell {
     -fx-background-color: rgb(126,135,142);
     -fx-cell-size: 22px;
-    -fx-table-cell-border-color: rgb(126,135,142);
+    -fx-table-cell-border-color: transparent;
 }
 .table-row-cell:selected {
     -fx-background-color: #2f353b;
