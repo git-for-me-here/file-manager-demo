@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
@@ -34,6 +37,41 @@ public class FileSystemTree {
         treeView.setRoot(root);
         treeView.setShowRoot(false);
         treeView.setCellFactory(this.getCellFactory);
+        
+        treeView.setOnMouseClicked((MouseEvent e) -> {
+            // работаем только, если было выделение
+            if (!treeView.getSelectionModel().isEmpty()) {
+                //работаем только со значимым item
+                if (!e.getTarget().toString().contains("'null'")) {
+                    // клик по области выделения
+                    if (e.getTarget() instanceof TreeCell || 
+                            e.getTarget() instanceof Text) {
+                        // запоминаем выбранный элемент, если он не null
+                        if (treeView.getSelectionModel().getSelectedItem() != null) {
+                            this.selectedItem = (TreeItem) treeView.getSelectionModel().getSelectedItem();
+                        }
+                    }
+                    // клик по arrow
+                    if (e.getTarget() instanceof Group || 
+                            e.getTarget() instanceof StackPane) {
+                        //System.out.println(e.getTarget());
+                        String receivedId = e.getPickResult().getIntersectedNode().getParent().getId() == null 
+                                ? e.getPickResult().getIntersectedNode().getParent().getParent().getId()
+                                : e.getPickResult().getIntersectedNode().getParent().getId();
+                        // если это НЕ предок или НЕ сам выделенный элемент;
+                        if (!selectedItem.getValue().toString().contains(receivedId)) {
+                            // выделяем нужный элемент
+                            if (getParentOfSelectedItem(selectedItem).isExpanded()) {
+                                treeView.getSelectionModel().select(selectedItem);
+                            } else {
+                                treeView.getSelectionModel().select(getParentOfSelectedItem(selectedItem));
+                            }
+                        }
+                        // иначе работаем с TreeCell
+                    }
+                }
+            }
+        });
         
         this.treeView = treeView;
     }
@@ -160,7 +198,7 @@ public class FileSystemTree {
         return false;
     }
     
-    protected TreeItem<File> getTreeItemById(String id) {
+    private TreeItem<File> getTreeItemById(String id) {
         return treeNodes.get(treeNodes.indexOf(getTreeDataBindingObjectById(id))).getTreeItem();
     }
     
@@ -172,7 +210,7 @@ public class FileSystemTree {
         return null;
     }
     
-    protected TreeItem getParentOfSelectedItem(TreeItem selectedItem) {
+    private TreeItem getParentOfSelectedItem(TreeItem selectedItem) {
         TreeItem parent = selectedItem;
 
         for (int i=1; i<this.treeView.getTreeItemLevel(selectedItem); i++) {
@@ -180,6 +218,12 @@ public class FileSystemTree {
         }
 
         return parent;
+    }
+    
+    public String getSelectedItemValue() {
+        TreeItem selectedItem = treeView.getTreeItem(treeView.getSelectionModel().getSelectedIndex());
+
+        return  selectedItem.getValue().toString();
     }
     
     public class TreeDataBinding  {

@@ -46,6 +46,7 @@
                 <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" onMousePressed="#handleTreePressed" />
                 <TableView fx:id="fileSystemTable" HBox.hgrow="ALWAYS" >
                     <columns>
+                        <TableColumn fx:id="iconCol" />
                         <TableColumn fx:id="nameCol" text="Имя" style="-fx-text-fill: #191e24;">
                             <cellValueFactory>
                                 <PropertyValueFactory property="name" />
@@ -61,7 +62,7 @@
                                 <PropertyValueFactory property="type" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn fx:id="sizeCol" text="Размер" style="-fx-text-fill: #444b52; -fx-alignment: CENTER-RIGHT; -fx-padding: 0 18 0 0;">
+                        <TableColumn fx:id="sizeCol" text="Размер" style="-fx-text-fill: #444b52; -fx-alignment: CENTER-RIGHT; -fx-padding: 0 23 0 0;">
                             <cellValueFactory>
                                 <PropertyValueFactory property="size" />
                             </cellValueFactory>

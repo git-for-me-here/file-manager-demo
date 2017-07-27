@@ -4,20 +4,41 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 /**
  *
  * @author fakelake
  */
 public class FileSystemTable {
-    protected ObservableList getFileMetaData(ArrayList<File> filesList) {
+    private TableView tableView;
+    
+    public FileSystemTable(TableView tableView) {
+        this.tableView = tableView; 
+        
+        TableColumn<FileMetaData, ImageView> iconCol = 
+                (TableColumn<FileMetaData, ImageView>)tableView.getColumns().get(0);
+        iconCol.setCellValueFactory(new PropertyValueFactory<>("icon"));
+    }
+    
+    private ObservableList getFileMetaData(ArrayList<File> filesList) {
         ObservableList<FileMetaData> list = FXCollections.observableArrayList();
         for (File file : filesList) {
+            ImageView icon = file.isFile() 
+                    ? new ImageView(new Image("icons/file-icon.png"))
+                    : new ImageView(new Image("icons/folder-icon.png"));
+            
             list.add(new FileMetaData(
+                    icon,
                     file.getName(),
                     getFormattedDate(file.lastModified()),
                     getFileType(file),
@@ -53,7 +74,23 @@ public class FileSystemTable {
         return String.format("%,d", result) + " КБ";
     }
     
+    protected void loadData(String path) {
+        File file = new File(path);
+        ArrayList<File> filesList = new ArrayList<>();
+        if (file.isFile()) {
+            filesList.add(file);
+        } else {
+            File[] filesArr = file.listFiles();
+            if (filesArr != null) {
+                filesList = new ArrayList<>(Arrays.asList(filesArr));
+            }
+        }
+
+        this.tableView.setItems(getFileMetaData(filesList));
+    }
+    
     public class FileMetaData  {
+        private ImageView icon;
         private String name;
         private String modified;
         private String type;
@@ -61,11 +98,20 @@ public class FileSystemTable {
         
         public FileMetaData() {}
         
-        public FileMetaData(String name, String modified, String type, String size) {
+        public FileMetaData(ImageView icon, String name, String modified, String type, String size) {
+            this.icon = icon;
             this.name = name;
             this.modified = modified;
             this.type = type;
             this.size = size;
+        }
+        
+        public ImageView getIcon() {
+            return this.icon;
+        }
+        
+        public void setName(ImageView icon) {
+            this.icon = icon;
         }
         
         public String getName() {
