@@ -34,7 +34,7 @@
                                         <Image url="icons/grey-folder-icon.png" />
                                     </image>
                                 </ImageView>
-                                <TextField fx:id="pathTextField" styleClass="pathTextField" />
+                                <TextField fx:id="pathTextField" styleClass="pathTextField" HBox.hgrow="ALWAYS" />
                             </children>
                         </HBox>
                     </children>

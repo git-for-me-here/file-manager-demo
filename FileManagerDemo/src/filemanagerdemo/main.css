@@ -87,6 +87,7 @@
     -fx-text-fill: #191e24; 
     -fx-font-size: 13;
     -fx-padding: 0 0 3 0;
+    -fx-highlight-fill: #191e24;
 }
 /*
  * дерево файловой системы

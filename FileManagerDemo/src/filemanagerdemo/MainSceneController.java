@@ -25,6 +25,7 @@ public class MainSceneController implements Initializable {
     private Stage stage;
     private FileSystemTree fsTree;
     private FileSystemTable fsTable;
+    private FileSystemPath fsPath;
     
     @FXML
     private Pane controlPane;
@@ -79,6 +80,7 @@ public class MainSceneController implements Initializable {
         if (e.getTarget() instanceof TreeCell ||
                 e.getTarget() instanceof Text) {
             fsTable.loadData(fsTree.getSelectedItemValue());
+            fsPath.setPath(fsTree.getSelectedItemValue());
         }
     }
     
@@ -119,6 +121,9 @@ public class MainSceneController implements Initializable {
         modifiedCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.15));
         typeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.15));
         sizeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.34)); 
+        
+        // Отображение пути до текущей директории
+        fsPath = new FileSystemPath(pathTextField);
     }
     
     void setStage(Stage primaryStage) {
