@@ -59,7 +59,8 @@ public class FileSystemTree {
                                 ? e.getPickResult().getIntersectedNode().getParent().getParent().getId()
                                 : e.getPickResult().getIntersectedNode().getParent().getId();
                         // если это НЕ предок или НЕ сам выделенный элемент;
-                        if (!selectedItem.getValue().toString().contains(receivedId)) {
+                        if (selectedItem != null &&
+                                !selectedItem.getValue().toString().contains(receivedId)) {
                             // выделяем нужный элемент
                             if (getParentOfSelectedItem(selectedItem).isExpanded()) {
                                 treeView.getSelectionModel().select(selectedItem);
@@ -224,6 +225,14 @@ public class FileSystemTree {
         TreeItem selectedItem = treeView.getTreeItem(treeView.getSelectionModel().getSelectedIndex());
 
         return  selectedItem.getValue().toString();
+    }
+    
+    public void setSelectedItem(String id) {
+        if (id.isEmpty()) {
+            treeView.getSelectionModel().clearSelection();
+        } else {
+            treeView.getSelectionModel().select(getTreeItemById(id));
+        }
     }
     
     public class TreeDataBinding  {

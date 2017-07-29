@@ -26,6 +26,7 @@ public class MainSceneController implements Initializable {
     private FileSystemTree fsTree;
     private FileSystemTable fsTable;
     private FileSystemPath fsPath;
+    private ListOfMarkedDirectories listMarkDir;
     
     @FXML
     private Pane controlPane;
@@ -73,14 +74,37 @@ public class MainSceneController implements Initializable {
     
     @FXML
     private void handleButtonBack(ActionEvent event) {
+        String path = listMarkDir.getPrevious();
+        
+        fsTree.setSelectedItem(path);
+        fsTable.loadData(path);
+        fsPath.setPath(path);
+        
+        listMarkDir.indexDecrement();
+    }
+    
+    @FXML
+    private void handleButtonNext(ActionEvent event) {
+        String path = listMarkDir.getNext();
+        
+        fsTree.setSelectedItem(path);
+        fsTable.loadData(path);
+        fsPath.setPath(path);
+        
+        listMarkDir.indexIncrement();
     }
     
     @FXML
     private void handleTreePressed(MouseEvent e) {
         if (e.getTarget() instanceof TreeCell ||
                 e.getTarget() instanceof Text) {
+            if (listMarkDir.getCurrentIndex() < 0) {
+                listMarkDir.clear();
+            }
+            
             fsTable.loadData(fsTree.getSelectedItemValue());
             fsPath.setPath(fsTree.getSelectedItemValue());
+            listMarkDir.addUnique(fsTree.getSelectedItemValue());
         }
     }
     
@@ -124,6 +148,15 @@ public class MainSceneController implements Initializable {
         
         // Отображение пути до текущей директории
         fsPath = new FileSystemPath(pathTextField);
+        
+        // Список куда попадают пути до просмотренных директорий
+        listMarkDir = new ListOfMarkedDirectories();
+        
+        // Слушатель для активации кнопок перемещения по просмотренным директориям
+        listMarkDir.indexProperty().addListener((observable, oldValue, newValue) -> {
+            btnBack.setDisable(newValue.intValue() < 0);
+            btnNext.setDisable(newValue.intValue() >= listMarkDir.size()-1);
+        });
     }
     
     void setStage(Stage primaryStage) {

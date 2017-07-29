@@ -16,15 +16,35 @@
             <children>
                 <Label styleClass="appName-label" text="file-manager-demo"  AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="8.0" />
                 <ImageView fitHeight="32.0" fitWidth="32.0" styleClass="logo" AnchorPane.topAnchor="3.5" />
-                <Button fx:id="btnClose" onAction="#handleButtonClose" prefHeight="32.0" prefWidth="32.0" styleClass="btnClose" AnchorPane.rightAnchor="5.0" />
-                <Button fx:id="btnResize" onAction="#handleButtonResize" prefHeight="32.0" prefWidth="32.0" styleClass="btnResize" AnchorPane.rightAnchor="37.0" />
-                <Button fx:id="btnHide"  onAction="#handleButtonHide" prefHeight="32.0" prefWidth="32.0" styleClass="btnHide" AnchorPane.rightAnchor="70.0" />
+                <Button fx:id="btnClose" onAction="#handleButtonClose" prefHeight="32.0" prefWidth="32.0" styleClass="btnClose" AnchorPane.rightAnchor="5.0">
+                    <tooltip>
+                        <Tooltip text="Закрыть" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnResize" onAction="#handleButtonResize" prefHeight="32.0" prefWidth="32.0" styleClass="btnResize" AnchorPane.rightAnchor="37.0">
+                    <tooltip>
+                        <Tooltip text="Изменить размер окна" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnHide"  onAction="#handleButtonHide" prefHeight="32.0" prefWidth="32.0" styleClass="btnHide" AnchorPane.rightAnchor="70.0">
+                    <tooltip>
+                        <Tooltip text="Свернуть" />
+                    </tooltip>
+                </Button>
             </children>
         </AnchorPane>
         <HBox style="-fx-padding: 0 0 10 5;" spacing="5.0" >
             <children>
-                <Button fx:id="btnBack" onAction="#handleButtonBack" prefHeight="20.0" prefWidth="32.0" styleClass="btnBack" disable="true" />
-                <Button fx:id="btnNext" prefHeight="20.0" prefWidth="32.0" styleClass="btnNext" disable="true" />
+                <Button fx:id="btnBack" onAction="#handleButtonBack" prefHeight="20.0" prefWidth="32.0" styleClass="btnBack" disable="true">
+                    <tooltip>
+                        <Tooltip text="Назад" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnNext" onAction="#handleButtonNext" prefHeight="20.0" prefWidth="32.0" styleClass="btnNext" disable="true">
+                    <tooltip>
+                        <Tooltip text="Вперед" />
+                    </tooltip>
+                </Button>
                 <VBox style="-fx-background-color: rgba(81,90,97,0.7); -fx-background-radius: 5; -fx-padding: 3;" HBox.hgrow="ALWAYS">
                     <children>
                         <HBox styleClass="pathPane" spacing="3.0" >
