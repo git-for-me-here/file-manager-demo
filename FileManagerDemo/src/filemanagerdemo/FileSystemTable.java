@@ -42,7 +42,8 @@ public class FileSystemTable {
                     file.getName(),
                     getFormattedDate(file.lastModified()),
                     getFileType(file),
-                    getFileSize(file)
+                    getFileSize(file),
+                    file.getAbsolutePath()
             ));
         }
         
@@ -95,15 +96,18 @@ public class FileSystemTable {
         private String modified;
         private String type;
         private String size;
+        private String path;
         
         public FileMetaData() {}
         
-        public FileMetaData(ImageView icon, String name, String modified, String type, String size) {
+        public FileMetaData(ImageView icon, String name, String modified,
+                String type, String size, String path) {
             this.icon = icon;
             this.name = name;
             this.modified = modified;
             this.type = type;
             this.size = size;
+            this.path = path;
         }
         
         public ImageView getIcon() {
@@ -144,6 +148,14 @@ public class FileSystemTable {
         
         public void setSize(String size) {
             this.size = size;
+        }
+        
+        public String getPath() {
+            return this.path;
+        }
+        
+        public void setPath(String path) {
+            this.path = path;
         }
         
         public Comparator<FileMetaData> FileTypeComparator = new Comparator<FileMetaData>() {

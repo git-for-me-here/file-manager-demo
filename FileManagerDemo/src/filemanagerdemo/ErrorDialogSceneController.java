@@ -53,9 +53,8 @@ public class ErrorDialogSceneController implements Initializable{
         this.stage = primaryStage;
     }
     
-    void setError(String errorPath) {
+    void setError(String error) {
         // Текст ошибки
-        errorLabel.setText("Не удается найти \"" + errorPath +  "\" . Проверьте,"
-                + " правильно ли указан путь до файла или директории.");
+        errorLabel.setText(error);
     }
 }

@@ -1,6 +1,7 @@
 package filemanagerdemo;
 
 import filemanagerdemo.FileSystemTable.FileMetaData;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -9,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -131,7 +131,9 @@ public class MainSceneController implements Initializable {
                 fsTable.loadData(path);
                 fileSystemTable.requestFocus();
             } else {
-                showFileNotFoundError(e, path);
+                String error = "Не удается найти \"" + path +  "\" . Проверьте, "
+                   + " правильно ли указан путь до файла или директории.";
+                showError(error);
             }
             
             fsPath.setPath(path);
@@ -183,11 +185,23 @@ public class MainSceneController implements Initializable {
                     
                     int selectedRow = fileSystemTable.getSelectionModel().getSelectedIndex();
                     FileMetaData selectedItem = (FileMetaData)fileSystemTable.getSelectionModel().getSelectedItem();
-                    String path = fsPath.getPath().substring(0, fsPath.getPath().length()-1) + File.separator + selectedItem.getName();
+                    String path = selectedItem.getPath();
+                    File file = new File(path);
                     
-                    fsPath.setPath(path);
-                    fsTable.loadData(path);
-                    listMarkDir.addUnique(path);
+                    if (file.isDirectory()) {
+                        fsPath.setPath(path);
+                        fsTable.loadData(path);
+                        listMarkDir.addUnique(path);
+                    } else {
+                        try {
+                            Desktop.getDesktop().open(file);
+                        } catch (IOException ex) {
+                            String error = "Не могу открыть файл \"" + selectedItem.getName() + "\"";
+                            try {
+                                showError(error);
+                            } catch (IOException ex1) { }
+                        }
+                    }
                 }
             }
         });
@@ -215,7 +229,7 @@ public class MainSceneController implements Initializable {
         this.stage = primaryStage;
     }
     
-    private void showFileNotFoundError(KeyEvent event, String path) throws IOException {
+    private void showError(String error) throws IOException {
         Stage eStage = new Stage();
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource("errorDialogScene.fxml"));
@@ -223,7 +237,7 @@ public class MainSceneController implements Initializable {
 
         ErrorDialogSceneController controller = (ErrorDialogSceneController)loader.getController();
         controller.setStage(eStage);
-        controller.setError(path);
+        controller.setError(error);
         
         Scene scene = new Scene(root, Color.TRANSPARENT);
         scene.setOnKeyPressed((KeyEvent e) -> {
@@ -235,8 +249,7 @@ public class MainSceneController implements Initializable {
         eStage.setScene(scene);
         eStage.initStyle(StageStyle.TRANSPARENT);
         eStage.initModality(Modality.WINDOW_MODAL);
-        eStage.initOwner(
-            ((Node)event.getSource()).getScene().getWindow() );
+        eStage.initOwner(stage);
         eStage.show();
     }
 
