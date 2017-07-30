@@ -1,5 +1,6 @@
 package filemanagerdemo;
 
+import filemanagerdemo.FileSystemTable.FileMetaData;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -174,6 +175,22 @@ public class MainSceneController implements Initializable {
         modifiedCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.15));
         typeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.15));
         sizeCol.prefWidthProperty().bind(fileSystemTable.widthProperty().multiply(0.34)); 
+        
+        fileSystemTable.setOnMouseClicked((MouseEvent e) -> {
+            if (e.getClickCount() == 2) {
+                if (fileSystemTable.getSelectionModel().getSelectedItem() != null) {
+                    fileSystemTree.getSelectionModel().clearSelection();
+                    
+                    int selectedRow = fileSystemTable.getSelectionModel().getSelectedIndex();
+                    FileMetaData selectedItem = (FileMetaData)fileSystemTable.getSelectionModel().getSelectedItem();
+                    String path = fsPath.getPath().substring(0, fsPath.getPath().length()-1) + File.separator + selectedItem.getName();
+                    
+                    fsPath.setPath(path);
+                    fsTable.loadData(path);
+                    listMarkDir.addUnique(path);
+                }
+            }
+        });
         
         // Отображение пути до текущей директории
         fsPath = new FileSystemPath(pathTextField);

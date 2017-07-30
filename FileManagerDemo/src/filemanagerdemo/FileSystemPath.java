@@ -19,10 +19,10 @@ public class FileSystemPath {
             if (isFocused) {
                 currentPath = pathTextField.getText();
                 pathTextField.selectAll();
-                flag = true;
+                flag = false;
             } else {
                 pathTextField.setText(currentPath);
-                flag = false;
+                flag = true;
             }
         }); 
         

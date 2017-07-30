@@ -87,7 +87,8 @@
     -fx-text-fill: #191e24; 
     -fx-font-size: 13;
     -fx-padding: 0 0 3 0;
-    -fx-highlight-fill: #191e24;
+    -fx-highlight-fill: #707c87;
+    -fx-highlight-text-fill: #191e24;
 }
 /*
  * дерево файловой системы
@@ -136,9 +137,7 @@
     -fx-table-cell-border-color: transparent;
 }
 .table-row-cell:selected {
-    -fx-background-color: #2f353b;
-    -fx-background-insets: 0;
-    -fx-background-radius: 1;
+    -fx-background-color: #707c87;
 }
 .table-view *.scroll-bar:horizontal *.increment-button,
 .table-view *.scroll-bar:horizontal *.decrement-button,
