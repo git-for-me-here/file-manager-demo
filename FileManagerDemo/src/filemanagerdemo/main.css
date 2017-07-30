@@ -150,3 +150,17 @@
     -fx-opacity: 0;
     -fx-padding:-7;
 }
+/*
+ *
+ * диалоговое окно с ошибкой
+ *
+ */
+.errorPane {
+    -fx-background-color: rgb(126,135,142);
+    -fx-alignment: center-left;
+    -fx-padding: 0 15 0 15;
+}
+.errorLabel {
+    -fx-text-fill: #191e24; 
+    -fx-font-size: 13;
+}

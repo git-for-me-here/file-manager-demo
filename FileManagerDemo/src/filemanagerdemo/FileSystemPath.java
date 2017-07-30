@@ -1,6 +1,7 @@
 package filemanagerdemo;
 
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 /**
  *
@@ -8,12 +9,35 @@ import javafx.scene.control.TextField;
  */
 public class FileSystemPath {
     private TextField pathTextField;
+    private String currentPath = null;
+    private boolean flag = false;
     
     public FileSystemPath(TextField pathTextField) {
         pathTextField.setFocusTraversable(false);
         
-        this.pathTextField = pathTextField;
+        pathTextField.focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (isFocused) {
+                currentPath = pathTextField.getText();
+                pathTextField.selectAll();
+                flag = true;
+            } else {
+                pathTextField.setText(currentPath);
+                flag = false;
+            }
+        }); 
         
+        pathTextField.setOnMouseClicked((MouseEvent event) -> {
+            if (!pathTextField.getText().isEmpty()) {
+                flag = !flag;
+                if (flag) {
+                    pathTextField.selectAll();
+                } else {
+                    pathTextField.deselect();
+                }
+            }
+        });
+        
+        this.pathTextField = pathTextField;
     }
     
     public String getPath() {

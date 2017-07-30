@@ -1,10 +1,16 @@
 package filemanagerdemo;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -12,10 +18,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
 import javafx.scene.effect.Bloom;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -76,7 +87,7 @@ public class MainSceneController implements Initializable {
     private void handleButtonBack(ActionEvent event) {
         String path = listMarkDir.getPrevious();
         
-        fsTree.setSelectedItem(path);
+        //fsTree.setSelectedItem(path);
         fsTable.loadData(path);
         fsPath.setPath(path);
         
@@ -87,7 +98,7 @@ public class MainSceneController implements Initializable {
     private void handleButtonNext(ActionEvent event) {
         String path = listMarkDir.getNext();
         
-        fsTree.setSelectedItem(path);
+        //fsTree.setSelectedItem(path);
         fsTable.loadData(path);
         fsPath.setPath(path);
         
@@ -95,9 +106,10 @@ public class MainSceneController implements Initializable {
     }
     
     @FXML
-    private void handleTreePressed(MouseEvent e) {
-        if (e.getTarget() instanceof TreeCell ||
-                e.getTarget() instanceof Text) {
+    private void handleTreeMousePressed(MouseEvent e) {
+        if ((e.getTarget() instanceof TreeCell ||
+                e.getTarget() instanceof Text) &&
+                !e.getTarget().toString().contains("'null'")) {
             if (listMarkDir.getCurrentIndex() < 0) {
                 listMarkDir.clear();
             }
@@ -105,6 +117,23 @@ public class MainSceneController implements Initializable {
             fsTable.loadData(fsTree.getSelectedItemValue());
             fsPath.setPath(fsTree.getSelectedItemValue());
             listMarkDir.addUnique(fsTree.getSelectedItemValue());
+        }
+    }
+    
+    @FXML
+    private void handleTfKeyPressed(KeyEvent e) throws IOException {
+        if (e.getCode() == KeyCode.ENTER) {
+            String path = fsPath.getPath();
+            File file = new File(path);
+            
+            if (file.exists()) {
+                fsTable.loadData(path);
+                fileSystemTable.requestFocus();
+            } else {
+                showFileNotFoundError(e, path);
+            }
+            
+            fsPath.setPath(path);
         }
     }
     
@@ -149,6 +178,12 @@ public class MainSceneController implements Initializable {
         // Отображение пути до текущей директории
         fsPath = new FileSystemPath(pathTextField);
         
+        pathTextField.focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (isFocused) {
+                fileSystemTree.getSelectionModel().clearSelection();
+            } 
+        }); 
+        
         // Список куда попадают пути до просмотренных директорий
         listMarkDir = new ListOfMarkedDirectories();
         
@@ -162,8 +197,33 @@ public class MainSceneController implements Initializable {
     void setStage(Stage primaryStage) {
         this.stage = primaryStage;
     }
+    
+    private void showFileNotFoundError(KeyEvent event, String path) throws IOException {
+        Stage eStage = new Stage();
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("errorDialogScene.fxml"));
+        Parent root = (Parent)loader.load();
 
-    private static class Coordinates {
+        ErrorDialogSceneController controller = (ErrorDialogSceneController)loader.getController();
+        controller.setStage(eStage);
+        controller.setError(path);
+        
+        Scene scene = new Scene(root, Color.TRANSPARENT);
+        scene.setOnKeyPressed((KeyEvent e) -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                eStage.close();
+            }
+        });
+        
+        eStage.setScene(scene);
+        eStage.initStyle(StageStyle.TRANSPARENT);
+        eStage.initModality(Modality.WINDOW_MODAL);
+        eStage.initOwner(
+            ((Node)event.getSource()).getScene().getWindow() );
+        eStage.show();
+    }
+
+    public static class Coordinates {
         public double x;
         public double y;
     }

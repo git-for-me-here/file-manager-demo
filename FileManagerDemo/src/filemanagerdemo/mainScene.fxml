@@ -54,7 +54,7 @@
                                         <Image url="icons/grey-folder-icon.png" />
                                     </image>
                                 </ImageView>
-                                <TextField fx:id="pathTextField" styleClass="pathTextField" HBox.hgrow="ALWAYS" />
+                                <TextField fx:id="pathTextField" onKeyPressed="#handleTfKeyPressed" styleClass="pathTextField" HBox.hgrow="ALWAYS" />
                             </children>
                         </HBox>
                     </children>
@@ -63,7 +63,7 @@
         </HBox>
         <HBox fx:id="contentPane" spacing="3.0" style="-fx-background-color: rgba(81,90,97,0.7); -fx-background-radius: 5;" VBox.vgrow="ALWAYS">
             <children>
-                <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" onMousePressed="#handleTreePressed" />
+                <TreeView fx:id="fileSystemTree" prefWidth="230.0" minWidth="230.0" onMousePressed="#handleTreeMousePressed" />
                 <TableView fx:id="fileSystemTable" HBox.hgrow="ALWAYS" >
                     <columns>
                         <TableColumn fx:id="iconCol" />
