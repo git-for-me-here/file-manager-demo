@@ -9,11 +9,18 @@ import java.util.Comparator;
 import java.util.Date;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -22,7 +29,44 @@ import javafx.scene.image.ImageView;
 public class FileSystemTable {
     private TableView tableView;
     
-    public FileSystemTable(TableView tableView) {
+    public FileSystemTable(TableView<FileMetaData> tableView) {
+        tableView.setPlaceholder(new Label(""));   
+        tableView.setRowFactory((TableView<FileMetaData> tv) -> {
+            TableRow<FileMetaData> row = new TableRow<>();
+
+            ContextMenu createContextMenu = new ContextMenu();
+            
+            Menu createMenu = new Menu("Создать");
+            Menu folderMenu = new Menu("Папку");
+            
+            MenuItem createHereMenuItem = new MenuItem("В текущей директории");
+            createHereMenuItem.setOnAction((ActionEvent event) -> {
+                
+            });
+            MenuItem createInFolderMenuItem = new MenuItem();
+
+            folderMenu.getItems().add(createHereMenuItem);
+            createMenu.getItems().add(folderMenu);
+            
+            createContextMenu.getItems().add(createMenu);
+            
+            createContextMenu.setOnShowing((WindowEvent event) -> {
+                if (!row.isEmpty() && 
+                        !row.getItem().getType().equals("Файл")) {
+                    createInFolderMenuItem.setText("В \"" +
+                            row.getItem().getName() + "\"");
+                    
+                    if (!folderMenu.getItems().contains(createInFolderMenuItem)) {
+                        folderMenu.getItems().add(createInFolderMenuItem);
+                    }
+                }
+            });
+            
+            row.contextMenuProperty().set(createContextMenu);
+            
+            return row;  
+        });
+        
         this.tableView = tableView; 
         
         TableColumn<FileMetaData, ImageView> iconCol = 

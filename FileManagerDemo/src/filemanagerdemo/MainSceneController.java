@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -42,6 +43,12 @@ public class MainSceneController implements Initializable {
     
     @FXML
     private Pane controlPane;
+    @FXML
+    private Pane quickMenuPane;
+    @FXML
+    private Label lineLabel;
+    @FXML
+    private Button btnCreateFolder;
     @FXML
     private Button btnClose;
     @FXML
@@ -93,6 +100,8 @@ public class MainSceneController implements Initializable {
         fsPath.setPath(path);
         
         listMarkDir.indexDecrement();
+        
+        fileSystemTree.getSelectionModel().clearSelection();
     }
     
     @FXML
@@ -104,6 +113,8 @@ public class MainSceneController implements Initializable {
         fsPath.setPath(path);
         
         listMarkDir.indexIncrement();
+        
+        fileSystemTree.getSelectionModel().clearSelection();
     }
     
     @FXML
@@ -215,6 +226,26 @@ public class MainSceneController implements Initializable {
             } 
         }); 
         
+        pathTextField.textProperty().addListener((obs, oldVal, str) -> {
+            if (str.isEmpty()) {
+                if (!quickMenuPane.getChildren().contains(lineLabel)) {
+                    quickMenuPane.getChildren().remove(btnCreateFolder);
+                    quickMenuPane.getStyleClass().add("quickMenuPaneCenter");
+                    quickMenuPane.getChildren().add(lineLabel);
+                    fileSystemTable.setPlaceholder(new Label(""));
+                }
+            } else {
+                if (!quickMenuPane.getChildren().contains(btnCreateFolder)) {
+                    if (!pathTextField.isFocused()) {
+                        quickMenuPane.getChildren().remove(lineLabel);
+                        quickMenuPane.getStyleClass().remove("quickMenuPaneCenter");
+                        quickMenuPane.getChildren().add(btnCreateFolder);
+                        fileSystemTable.setPlaceholder(new Label("Эта папка пуста."));
+                    }
+                }
+            }
+        });
+        
         // Список куда попадают пути до просмотренных директорий
         listMarkDir = new ListOfMarkedDirectories();
         
@@ -223,6 +254,10 @@ public class MainSceneController implements Initializable {
             btnBack.setDisable(newValue.intValue() < 0);
             btnNext.setDisable(newValue.intValue() >= listMarkDir.size()-1);
         });
+        
+        // Cкрываем кнопку создания новой папки,
+        // пока нет контента в таблице файловой системы
+        quickMenuPane.getChildren().remove(btnCreateFolder);
     }
     
     void setStage(Stage primaryStage) {
