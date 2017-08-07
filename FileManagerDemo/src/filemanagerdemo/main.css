@@ -180,6 +180,7 @@
 }
 .menu-item .label {
     -fx-text-fill: whitesmoke;
+    -fx-padding: 1 5 1 24;
 }
 .menu-item:focused {
     -fx-background-color: #d13b1e;

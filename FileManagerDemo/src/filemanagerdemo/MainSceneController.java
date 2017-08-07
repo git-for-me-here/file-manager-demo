@@ -118,6 +118,26 @@ public class MainSceneController implements Initializable {
     }
     
     @FXML
+    private void handleButtonCreateFolder(ActionEvent event) {
+        String path = fsPath.getPath();
+        File currentFolder = new File(path);
+        File newFolder = new File(path + File.separator + "Новая папка");
+        
+        if (!newFolder.exists()) {
+            newFolder.mkdir();
+        } else {
+            String[] list = currentFolder.list((File dir, String name) -> 
+                    name.matches("Новая папка( (\\(\\d+\\)))?"));
+            int i = list.length + 1;
+            
+            newFolder = new File(path + File.separator + "Новая папка (" + i + ")");
+            newFolder.mkdir();
+        }
+        
+        FileManagerDemo.FILE_SYSTEM_CHANGED.set("FILE_CREATED::" + newFolder);
+    }
+    
+    @FXML
     private void handleTreeMousePressed(MouseEvent e) {
         if ((e.getTarget() instanceof TreeCell ||
                 e.getTarget() instanceof Text) &&
@@ -258,6 +278,31 @@ public class MainSceneController implements Initializable {
         // Cкрываем кнопку создания новой папки,
         // пока нет контента в таблице файловой системы
         quickMenuPane.getChildren().remove(btnCreateFolder);
+        
+        // Обновление данных, 
+        // если произошли изменения в файловой ситеме
+        FileManagerDemo.FILE_SYSTEM_CHANGED.addListener((obs, oldValue, newValue) -> {
+            String change = newValue.split("::")[0];
+            String file = newValue.split("::")[1];
+            String currentDir = file.substring(0,file.lastIndexOf(File.separatorChar));
+
+            switch (change) {
+                case "FILE_CREATED":
+                    fsTree.addItem(currentDir, new File(file));
+                    break;
+                
+                case "FILE_CREATED_IN_FOLDER":
+                    fsTree.addItem(currentDir, new File(file));
+                    currentDir = currentDir.substring(0,currentDir.lastIndexOf(File.separatorChar));
+                    break;
+                    
+                case "FILE_DELETED":
+                    fsTree.removeItem(currentDir, file);
+                    break;
+            }
+            
+            fsTable.loadData(currentDir);
+        });
     }
     
     void setStage(Stage primaryStage) {

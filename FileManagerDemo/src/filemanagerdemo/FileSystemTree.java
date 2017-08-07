@@ -200,7 +200,10 @@ public class FileSystemTree {
     }
     
     private TreeItem<File> getTreeItemById(String id) {
-        return treeNodes.get(treeNodes.indexOf(getTreeDataBindingObjectById(id))).getTreeItem();
+        if (getTreeDataBindingObjectById(id) == null) return null;
+        
+        return treeNodes.get(treeNodes.indexOf(getTreeDataBindingObjectById(id)))
+                .getTreeItem();
     }
     
     private TreeDataBinding getTreeDataBindingObjectById(String id) {
@@ -219,6 +222,23 @@ public class FileSystemTree {
         }
 
         return parent;
+    }
+    
+    protected void addItem(String parentId, File file) {
+        TreeItem<File> child = new TreeItem<>(file);
+        
+        if (getTreeItemById(parentId) != null) {
+            this.getTreeItemById(parentId).getChildren().add(child);
+        }
+    }
+    
+    protected void removeItem(String parentId, String childId) {
+        if (getTreeItemById(parentId) != null && 
+                getTreeItemById(childId) != null) {
+            TreeItem<File> parent = this.getTreeItemById(parentId);
+            TreeItem<File> child = this.getTreeItemById(childId);
+            parent.getChildren().remove(child);
+        }
     }
     
     public String getSelectedItemValue() {

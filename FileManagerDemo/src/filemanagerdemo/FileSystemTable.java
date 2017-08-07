@@ -33,36 +33,56 @@ public class FileSystemTable {
         tableView.setPlaceholder(new Label(""));   
         tableView.setRowFactory((TableView<FileMetaData> tv) -> {
             TableRow<FileMetaData> row = new TableRow<>();
-
-            ContextMenu createContextMenu = new ContextMenu();
+            
+            ContextMenu contextMenu = new ContextMenu();
             
             Menu createMenu = new Menu("Создать");
             Menu folderMenu = new Menu("Папку");
             
             MenuItem createHereMenuItem = new MenuItem("В текущей директории");
             createHereMenuItem.setOnAction((ActionEvent event) -> {
+                String path = tv.getItems().get(0).getPath();
+                path = path.substring(0, path.lastIndexOf(File.separatorChar));
                 
+                createDir(path, "current");
             });
             MenuItem createInFolderMenuItem = new MenuItem();
-
+            createInFolderMenuItem.setOnAction((ActionEvent event) -> {
+                String path = row.getItem().getPath();
+                
+                createDir(path, "internal");
+            });
+            MenuItem deleteItem = new MenuItem("Удалить");
+            deleteItem.setOnAction((ActionEvent event) -> {
+                String path = row.getItem().getPath();
+                File file = new File(path);
+                
+                deleteFile(file); 
+            });
+            
             folderMenu.getItems().add(createHereMenuItem);
             createMenu.getItems().add(folderMenu);
             
-            createContextMenu.getItems().add(createMenu);
+            contextMenu.getItems().add(createMenu);
             
-            createContextMenu.setOnShowing((WindowEvent event) -> {
-                if (!row.isEmpty() && 
-                        !row.getItem().getType().equals("Файл")) {
-                    createInFolderMenuItem.setText("В \"" +
-                            row.getItem().getName() + "\"");
+            contextMenu.setOnShowing((WindowEvent event) -> {
+                if (!row.isEmpty()) {
+                    if (!row.getItem().getType().equals("Файл")) {
+                        createInFolderMenuItem.setText("В \"" +
+                                row.getItem().getName() + "\"");
+
+                        if (!folderMenu.getItems().contains(createInFolderMenuItem)) {
+                            folderMenu.getItems().add(createInFolderMenuItem);
+                        }
+                    }
                     
-                    if (!folderMenu.getItems().contains(createInFolderMenuItem)) {
-                        folderMenu.getItems().add(createInFolderMenuItem);
+                    if (!contextMenu.getItems().contains(deleteItem)) {
+                        contextMenu.getItems().add(deleteItem);
                     }
                 }
             });
             
-            row.contextMenuProperty().set(createContextMenu);
+            row.contextMenuProperty().set(contextMenu);
             
             return row;  
         });
@@ -117,6 +137,62 @@ public class FileSystemTable {
         if (bytes < unit) return "1 КБ";
         int result = (int)Math.ceil(bytes / (double)unit);
         return String.format("%,d", result) + " КБ";
+    }
+    
+    private void deleteFile(File file) {
+        // если это директория
+        if(file.isDirectory()) {
+            // если папка ничего не содержит удаляем ее
+            if(file.list().length == 0) {
+               file.delete();
+            } else {
+                // получаем список содержимого директории
+                String files[] = file.list();
+
+                for (String temp : files) {
+                    File fileDelete = new File(file, temp);
+
+                    //recursive delete
+                    deleteFile(fileDelete);
+                }
+
+                // проверяем директоию снова, если она пуста, удаляем ее
+                if(file.list().length == 0) {
+                    file.delete();
+                }
+            }
+    	} else{
+            // если это файл, удаляем его
+            file.delete();
+    	}
+        
+        FileManagerDemo.FILE_SYSTEM_CHANGED.set("FILE_DELETED::" + file.getPath());
+    }
+    
+    private void createDir(String path, String folder) {
+        File currentFolder = new File(path);
+        File newFolder = new File(path + File.separator + "Новая папка");
+
+        if (!newFolder.exists()) {
+            newFolder.mkdir();
+        } else {
+            String[] list = currentFolder.list((File dir, String name) -> 
+                    name.matches("Новая папка( (\\(\\d+\\)))?"));
+            int i = list.length + 1;
+
+            newFolder = new File(path + File.separator + "Новая папка (" + i + ")");
+            newFolder.mkdir(); 
+        } 
+        
+        switch (folder) {
+            case "current":
+                FileManagerDemo.FILE_SYSTEM_CHANGED.set("FILE_CREATED::" + newFolder);
+                break;
+                
+            case "internal":
+                FileManagerDemo.FILE_SYSTEM_CHANGED.set("FILE_CREATED_IN_FOLDER::" + newFolder);
+                break;
+        }
     }
     
     protected void loadData(String path) {

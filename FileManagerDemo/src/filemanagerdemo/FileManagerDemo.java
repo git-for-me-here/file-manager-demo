@@ -2,6 +2,8 @@ package filemanagerdemo;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,6 +17,7 @@ import javafx.stage.StageStyle;
  * @author fakelake
  */
 public class FileManagerDemo extends Application {
+    public static StringProperty FILE_SYSTEM_CHANGED = new SimpleStringProperty();
     
     @Override
     public void start(Stage primaryStage) throws Exception {
